@@ -12,6 +12,7 @@ import random
 import string
 import json
 import pyperclip
+import sys
 
 # Generates the passwords 
 def generator(n):
@@ -27,13 +28,12 @@ def generator(n):
 
 # Retrieves passwords from the json file
 def get_password(account_name, dictionary):
-    while True:
-        account_name = input('Which account do you want?\n')
-        if account_name in account_dict.keys():
-            break
-        else:
-            print('That account is not in the system, please try again.')
     return dictionary[account_name]
+
+# Stores passwords into the file
+def store_password(account_name, password, dictionary):
+    dictionary[account_name] = password
+    print('Password succesfully stored')
 
 # Prints out how this pos works
 def usage():
@@ -44,7 +44,7 @@ def usage():
     print('Consider yourself warned...')
 
 # Probably a better way to do this. I'm open to suggestions...    
-if sys.argv[:0]:
+if not len(sys.argv[1:]):
     usage()
 
 elif sys.argv[1] == '-M':
