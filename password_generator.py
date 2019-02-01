@@ -28,7 +28,13 @@ def generator(n):
 
 # Retrieves passwords from the json file
 def get_password(account_name, dictionary):
-    return dictionary[account_name]
+    #return dictionary[account_name]
+    if account_name in account_dict:
+        password = account_dict[account_name]
+        pyperclip.copy(password)
+        return 'Password copied to clipboard'
+    else:
+        return 'No password exists for that account'
 
 # Stores passwords into the file
 def store_password(account_name, password, dictionary):
@@ -64,13 +70,9 @@ try:
 
         with open('password_manager.json', 'r') as pass_dict:
             account_dict = json.load(pass_dict)
-            
-        if account_name in account_dict:
-            password = account_dict[account_name]
-            pyperclip.copy(password)
-            print('Password copied to clipboard')
-        else:
-            print('No password exists for that account')
+
+        print(get_password(account_name, account_dict))    
+        
     
 except IndexError:
     usage()           
