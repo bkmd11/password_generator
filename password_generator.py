@@ -3,9 +3,9 @@
 """ This program can generate, store, and find passwords for various accounts.
 It is probably extremely insecure and should be used by no one, ever.
 
-Currently my problem with it is my redundant usage() call in the else
-statement. But other things I tried cause other bugs.
-I will come back to it
+Need to set up a way to encrypt the passwords stored in the json file.
+Also interested in setting up a master password to make changes and pull
+out existing passwords.
 """
 
 import random
@@ -43,32 +43,34 @@ def usage():
     print('NEVER actually store your passwords in here because you will be hacked')
     print('Consider yourself warned...')
 
-# Probably a better way to do this. I'm open to suggestions...    
-if not len(sys.argv[1:]):
-    usage()
-
-elif sys.argv[1] == '-M':
-    pass_length = sys.argv[2]
-    account = sys.argv[3]
+try:
+    # Takes system arguments for making the password
+    if sys.argv[1] == '-M':
+        pass_length = sys.argv[2]
+        account = sys.argv[3]
     
-    with open('password_manager.json', 'r') as pass_dict:
-        account_dict = json.load(pass_dict)
+        with open('password_manager.json', 'r') as pass_dict:
+            account_dict = json.load(pass_dict)
 
-    password = generator(int(pass_length))
-    store_password(account, password, account_dict)
+        password = generator(int(pass_length))
+        store_password(account, password, account_dict)
 
-    with open('password_manager.json', 'w') as pass_man:
-        json.dump(account_dict, pass_man)
+        with open('password_manager.json', 'w') as pass_man:
+            json.dump(account_dict, pass_man)
+            
+    # Takes system arguments to call up passwords
+    elif sys.argv[1] == '-F':
+        account_name = sys.argv[2]
 
-elif sys.argv[1] == '-F':
-    account_name = sys.argv[2]
-
-    with open('password_manager.json', 'r') as pass_dict:
-        account_dict = json.load(pass_dict)
-
-    password = account_dict[account_name]
-    pyperclip.copy(password)
-    print('Password copied to clipboard')
+        with open('password_manager.json', 'r') as pass_dict:
+            account_dict = json.load(pass_dict)
+            
+        if account_name in account_dict:
+            password = account_dict[account_name]
+            pyperclip.copy(password)
+            print('Password copied to clipboard')
+        else:
+            print('No password exists for that account')
     
-else:
+except IndexError:
     usage()           

@@ -1,0 +1,3 @@
+#I want to ignore the file my passwords get stored in
+
+*.json
