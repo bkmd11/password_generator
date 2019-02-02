@@ -6,6 +6,8 @@ It is probably extremely insecure and should be used by no one, ever.
 Need to set up a way to encrypt the passwords stored in the json file.
 Also interested in setting up a master password to make changes and pull
 out existing passwords.
+
+Also getting rid of the redundant call for json.load. Could make a function...
 """
 
 import random
@@ -49,14 +51,15 @@ def usage():
     print('NEVER actually store your passwords in here because you will be hacked')
     print('Consider yourself warned...')
 
+# Opens the json file to be read
+with open('password_manager.json', 'r') as pass_dict:
+    account_dict = json.load(pass_dict)
+
 try:
     # Takes system arguments for making the password
     if sys.argv[1] == '-M':
         pass_length = sys.argv[2]
         account = sys.argv[3]
-    
-        with open('password_manager.json', 'r') as pass_dict:
-            account_dict = json.load(pass_dict)
 
         password = generator(int(pass_length))
         store_password(account, password, account_dict)
@@ -68,11 +71,7 @@ try:
     elif sys.argv[1] == '-F':
         account_name = sys.argv[2]
 
-        with open('password_manager.json', 'r') as pass_dict:
-            account_dict = json.load(pass_dict)
-
         print(get_password(account_name, account_dict))    
-        
-    
+            
 except IndexError:
     usage()           
