@@ -3,11 +3,9 @@
 """ This program can generate, store, and find passwords for various accounts.
 It is probably extremely insecure and should be used by no one, ever.
 
-Need to set up a way to encrypt the passwords stored in the json file.
-Also interested in setting up a master password to make changes and pull
-out existing passwords.
-
-Also getting rid of the redundant call for json.load. Could make a function...
+I need to encrypt my password list.
+I also want to hash my master password, and compare my input to that hash,
+because it will make me feel cool.
 """
 
 import random
