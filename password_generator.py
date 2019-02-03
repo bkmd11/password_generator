@@ -15,12 +15,14 @@ import string
 import json
 import pyperclip
 import sys
+import getpass
 
 # Generates the passwords 
 def generator(n):
     all_letters = list(string.ascii_letters + string.digits)
     password = []
     
+    master_password()
     for i in range(n):
         character = random.choice(all_letters)
         password.append(character)
@@ -31,6 +33,7 @@ def generator(n):
 # Retrieves passwords from the json file
 def get_password(account_name, dictionary):
     #return dictionary[account_name]
+    master_password()
     if account_name in account_dict:
         password = account_dict[account_name]
         pyperclip.copy(password)
@@ -42,6 +45,13 @@ def get_password(account_name, dictionary):
 def store_password(account_name, password, dictionary):
     dictionary[account_name] = password
     print('Password succesfully stored')
+    
+# Checks a master password for security
+def master_password():
+    master_pass = getpass.getpass('Enter your password:\n')
+    if master_pass != 'spam':
+        print('INVALID PASSWORD!!!')
+        sys.exit()
 
 # Prints out how this pos works
 def usage():
