@@ -4,8 +4,8 @@
 It is probably extremely insecure and should be used by no one, ever.
 
 I need to encrypt my password list.
-I also want to hash my master password, and compare my input to that hash,
-because it will make me feel cool.
+
+Look up how to save encrypted info to a json file. 
 """
 
 import random
@@ -14,6 +14,9 @@ import json
 import pyperclip
 import sys
 import getpass
+import hashlib
+
+from cryptography.fernet import Fernet
 
 # Generates the passwords 
 def generator(n):
@@ -46,8 +49,12 @@ def store_password(account_name, password, dictionary):
     
 # Checks a master password for security
 def master_password():
-    master_pass = getpass.getpass('Enter your password:\n')
-    if master_pass != 'spam':
+    master = getpass.getpass('Enter your password:\n')
+    # Turns user input intp bytes for hashing
+    master_pass = master.encode()
+    h = hashlib.sha256(master_pass).hexdigest()
+    
+    if h != '4e388ab32b10dc8dbc7e28144f552830adc74787c1e2c0824032078a79f227fb':
         print('INVALID PASSWORD!!!')
         sys.exit()
 
@@ -58,6 +65,8 @@ def usage():
     print('-F <account name>    Finds the password for that account, and copies it to the clipboard')
     print('NEVER actually store your passwords in here because you will be hacked')
     print('Consider yourself warned...')
+
+#key = b'U9ERbXPIeJgHxj8BCpc-BQvV2JiXVtYHIGVQLtrWruo='
 
 # Opens the json file to be read
 with open('password_manager.json', 'r') as pass_dict:
@@ -72,9 +81,16 @@ try:
         password = generator(int(pass_length))
         store_password(account, password, account_dict)
 
+        # Turning my dictionary into something I can encrypt
+        bytes_dict = json.dumps(account_dict).encode()
+        f = Fernet(key)
+        token = f.encrypt(bytes_dict)
+
+        ### TypeError: Object of type 'bytes' is not JSON serializable ###
+
         with open('password_manager.json', 'w') as pass_man:
-            json.dump(account_dict, pass_man)
-            
+            json.dump(token, pass_man)
+    
     # Takes system arguments to call up passwords
     elif sys.argv[1] == '-F':
         account_name = sys.argv[2]
