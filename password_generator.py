@@ -5,7 +5,15 @@ It is probably extremely insecure and should be used by no one, ever.
 
 I need to encrypt my password list.
 
-Look up how to save encrypted info to a json file. 
+It seems to me that I cannont do what I wanted to do with the JSON file.
+I cannot store bytes in it, and my attempts at encrytping with cryptography
+makes everything a byte...
+
+It is probably possible to save my encrytpions in a .txt file, but I assume
+that its a dangerous practice because malicious code could be introduced, and
+things might not convert back to the dictionary.
+
+So going forward I need to find a better way to store my passwords
 """
 
 import random
@@ -33,9 +41,8 @@ def generator(n):
 
 # Retrieves passwords from the json file
 def get_password(account_name, dictionary):
-    #return dictionary[account_name]
-    master_password()
     if account_name in account_dict:
+        master_password()
         password = account_dict[account_name]
         pyperclip.copy(password)
         return 'Password copied to clipboard'
@@ -69,9 +76,13 @@ def usage():
 #key = b'U9ERbXPIeJgHxj8BCpc-BQvV2JiXVtYHIGVQLtrWruo='
 
 # Opens the json file to be read
-with open('password_manager.json', 'r') as pass_dict:
-    account_dict = json.load(pass_dict)
-
+try:
+    with open('password_manager.json', 'r') as pass_dict:
+        account_dict = json.load(pass_dict)
+# If the json file doesnt exist
+except:
+    account_dict = {}
+    
 try:
     # Takes system arguments for making the password
     if sys.argv[1] == '-M':
@@ -82,14 +93,14 @@ try:
         store_password(account, password, account_dict)
 
         # Turning my dictionary into something I can encrypt
-        bytes_dict = json.dumps(account_dict).encode()
-        f = Fernet(key)
-        token = f.encrypt(bytes_dict)
+        #bytes_dict = json.dumps(account_dict).encode()
+        #f = Fernet(key)
+        #token = f.encrypt(bytes_dict)
 
         ### TypeError: Object of type 'bytes' is not JSON serializable ###
 
         with open('password_manager.json', 'w') as pass_man:
-            json.dump(token, pass_man)
+            json.dump(account_dict, pass_man)
     
     # Takes system arguments to call up passwords
     elif sys.argv[1] == '-F':
