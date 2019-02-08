@@ -3,17 +3,15 @@
 """ This program can generate, store, and find passwords for various accounts.
 It is probably extremely insecure and should be used by no one, ever.
 
-I need to encrypt my password list.
+Through careful research I found out how to encrypt my file.
+This currently has a lot to be cleaned up to be more pretty, but
+overall I am much excitment.
 
-It seems to me that I cannont do what I wanted to do with the JSON file.
-I cannot store bytes in it, and my attempts at encrytping with cryptography
-makes everything a byte...
+Known weakness is that my source code has both my hashed master_pass,
+and the encryption key in it. So anyone that has a text editor can find
+that info and attack me.
 
-It is probably possible to save my encrytpions in a .txt file, but I assume
-that its a dangerous practice because malicious code could be introduced, and
-things might not convert back to the dictionary.
-
-So going forward I need to find a better way to store my passwords
+But much excitment.
 """
 
 import random
@@ -23,6 +21,7 @@ import pyperclip
 import sys
 import getpass
 import hashlib
+import send2trash
 
 from cryptography.fernet import Fernet
 
@@ -73,11 +72,27 @@ def usage():
     print('NEVER actually store your passwords in here because you will be hacked')
     print('Consider yourself warned...')
 
-#key = b'U9ERbXPIeJgHxj8BCpc-BQvV2JiXVtYHIGVQLtrWruo='
+
+# Key to decrypt
+key = b'U9ERbXPIeJgHxj8BCpc-BQvV2JiXVtYHIGVQLtrWruo='
+
+encrypted_file = 'password_manager.encrypted'
+decrypted_file = 'password_manager.json'
+
+
+# Decrypts the file and writes it to a json file
+with open(encrypted_file, 'rb') as file:
+    data = file.read()
+
+fernet = Fernet(key)
+decrypted = fernet.decrypt(data)
+
+with open(decrypted_file, 'wb') as read_file:
+    read_file.write(decrypted)
 
 # Opens the json file to be read
 try:
-    with open('password_manager.json', 'r') as pass_dict:
+    with open(decrypted_file, 'r') as pass_dict:
         account_dict = json.load(pass_dict)
 # If the json file doesnt exist
 except:
@@ -92,21 +107,26 @@ try:
         password = generator(int(pass_length))
         store_password(account, password, account_dict)
 
-        # Turning my dictionary into something I can encrypt
-        #bytes_dict = json.dumps(account_dict).encode()
-        #f = Fernet(key)
-        #token = f.encrypt(bytes_dict)
-
-        ### TypeError: Object of type 'bytes' is not JSON serializable ###
-
-        with open('password_manager.json', 'w') as pass_man:
+        with open(decrypted_file, 'w') as pass_man:
             json.dump(account_dict, pass_man)
+
+        with open(decrypted_file, 'rb') as file:
+            data = file.read()
+
+        fernet = Fernet(key)
+        encrypted = fernet.encrypt(data)
+
+        with open(encrypted_file, 'wb') as file:
+            file.write(encrypted)
+
     
     # Takes system arguments to call up passwords
     elif sys.argv[1] == '-F':
         account_name = sys.argv[2]
 
-        print(get_password(account_name, account_dict))    
+        print(get_password(account_name, account_dict))
+
+    send2trash.send2trash(decrypted_file)
             
 except IndexError:
     usage()           
