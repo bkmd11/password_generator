@@ -79,19 +79,19 @@ key = b'U9ERbXPIeJgHxj8BCpc-BQvV2JiXVtYHIGVQLtrWruo='
 encrypted_file = 'password_manager.encrypted'
 decrypted_file = 'password_manager.json'
 
-
-# Decrypts the file and writes it to a json file
-with open(encrypted_file, 'rb') as file:
-    data = file.read()
-
-fernet = Fernet(key)
-decrypted = fernet.decrypt(data)
-
-with open(decrypted_file, 'wb') as read_file:
-    read_file.write(decrypted)
-
-# Opens the json file to be read
 try:
+    # Decrypts the file and writes it to a json file
+    with open(encrypted_file, 'rb') as file:
+        data = file.read()
+
+    fernet = Fernet(key)
+    decrypted = fernet.decrypt(data)
+
+    with open(decrypted_file, 'wb') as read_file:
+        read_file.write(decrypted)
+
+    # Opens the json file to be read
+
     with open(decrypted_file, 'r') as pass_dict:
         account_dict = json.load(pass_dict)
 # If the json file doesnt exist
