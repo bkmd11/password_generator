@@ -63,6 +63,27 @@ def master_password():
         print('INVALID PASSWORD!!!')
         sys.exit()
 
+# Loads/Dumps my json file
+def json_function(json_file, mode, data):
+    if data == None:
+        with open(json_file, mode) as file:
+            data = json.load(file)
+        return data
+    else:
+        with open(json_file, mode) as file:
+            json.dump(data, file)
+
+# Handles my encrypted file
+def encrypt_function(encrypt_file, mode, data):
+    if data == None:
+        with open(encrypt_file, mode) as file:
+            data = file.read()
+        return data
+    else:
+        with open(encrypt_file, mode) as file:
+            file.write(data)
+
+            
 # Prints out how this pos works
 def usage():
     print('A very shitty password manager')
@@ -71,11 +92,10 @@ def usage():
     print('NEVER actually store your passwords in here because you will be hacked')
     print('Consider yourself warned...')
 
-
+# Makes sure my usb is plugged in with the file on it
 try:
-    # Key to decrypt
-    with open('E:key.json', 'rb')as file:
-        key = json.load(file)# I could put this on a flashdrive
+    key = json_function('E:key.json', 'rb', None)
+        
 except FileNotFoundError:
     print('Unicorns don\'t exist')
     sys.exit()
@@ -84,20 +104,15 @@ encrypted_file = 'password_manager.encrypted'
 decrypted_file = 'password_manager.json'
 
 try:
-    # Decrypts the file and writes it to a json file
-    with open(encrypted_file, 'rb') as file:
-        data = file.read()
+    data = encrypt_function(encrypted_file, 'rb', None)
 
     fernet = Fernet(key)
     decrypted = fernet.decrypt(data)
 
-    with open(decrypted_file, 'wb') as read_file:
-        read_file.write(decrypted)
+    encrypt_function(decrypted_file, 'wb', decrypted)
 
-    # Opens the json file to be read
-
-    with open(decrypted_file, 'r') as pass_dict:
-        account_dict = json.load(pass_dict)
+    account_dict = json_function(decrypted_file, 'r', None)
+    
 # If the json file doesnt exist
 except:
     account_dict = {}
@@ -113,18 +128,13 @@ try:
         password = generator(int(pass_length))
         store_password(account, password, account_dict)
 
-        with open(decrypted_file, 'w') as pass_man:
-            json.dump(account_dict, pass_man)
-
-        with open(decrypted_file, 'rb') as file:
-            data = file.read()
+        json_function(decrypted_file, 'w', account_dict)
+        data = encrypt_function(decrypted_file, 'rb', None)
 
         fernet = Fernet(key)
         encrypted = fernet.encrypt(data)
 
-        with open(encrypted_file, 'wb') as file:
-            file.write(encrypted)
-
+        encrypt_function(encrypted_file, 'wb', encrypted)
     
     # Takes system arguments to call up passwords
     elif sys.argv[1] == '-F':
