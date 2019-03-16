@@ -12,6 +12,15 @@ and the encryption key in it. So anyone that has a text editor can find
 that info and attack me.
 
 But much excitment.
+
+Ideas for Improvment:
+USB for ferent key and password hash (assert line for ensuring drive is in)
+Have a new ferent key encrypt the file every time it closes (could cause failure)
+Import optparse for my command line arguments
+
+I am also going to rename this "unIpass" because why the hell not
+With this name change I am going to make a logo that gets displayed
+when it starts up
 """
 
 import random
@@ -21,7 +30,7 @@ import pyperclip
 import sys
 import getpass
 import hashlib
-import send2trash
+import send2trash   # Using send2trash to not permantly delete my file yet
 
 from cryptography.fernet import Fernet
 
@@ -74,7 +83,7 @@ def usage():
 
 
 # Key to decrypt
-key = b'U9ERbXPIeJgHxj8BCpc-BQvV2JiXVtYHIGVQLtrWruo='
+key = b'XpvrSWhinFXNycFkFX8DFBFDTWLNJxRYLAQtZFTxG8w='  # I could put this on a flashdrive
 
 encrypted_file = 'password_manager.encrypted'
 decrypted_file = 'password_manager.json'
