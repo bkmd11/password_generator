@@ -3,24 +3,14 @@
 """ This program can generate, store, and find passwords for various accounts.
 It is probably extremely insecure and should be used by no one, ever.
 
-Through careful research I found out how to encrypt my file.
 This currently has a lot to be cleaned up to be more pretty, but
 overall I am much excitment.
-
-Known weakness is that my source code has both my hashed master_pass,
-and the encryption key in it. So anyone that has a text editor can find
-that info and attack me.
-
-But much excitment.
 
 Ideas for Improvment:
 USB for ferent key and password hash (assert line for ensuring drive is in)
 Have a new ferent key encrypt the file every time it closes (could cause failure)
 Import optparse for my command line arguments
-
-I am also going to rename this "unIpass" because why the hell not
-With this name change I am going to make a logo that gets displayed
-when it starts up
+Make a logo that prints on starting
 """
 
 import random
@@ -82,9 +72,14 @@ def usage():
     print('Consider yourself warned...')
 
 
-# Key to decrypt
-key = b'XpvrSWhinFXNycFkFX8DFBFDTWLNJxRYLAQtZFTxG8w='  # I could put this on a flashdrive
-
+try:
+    # Key to decrypt
+    with open('E:key.json', 'rb')as file:
+        key = json.load(file)# I could put this on a flashdrive
+except FileNotFoundError:
+    print('Unicorns don\'t exist')
+    sys.exit()
+    
 encrypted_file = 'password_manager.encrypted'
 decrypted_file = 'password_manager.json'
 
@@ -106,7 +101,9 @@ try:
 # If the json file doesnt exist
 except:
     account_dict = {}
-    
+
+
+### I can use optparse to do this better maybe ###  
 try:
     # Takes system arguments for making the password
     if sys.argv[1] == '-M':
