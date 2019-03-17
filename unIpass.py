@@ -40,8 +40,8 @@ def generator(n):
 
 # Retrieves passwords from the dictionary
 def get_password(account_name, dictionary):
+    master_password()
     if account_name in dictionary:
-        master_password()
         password = account_dict[account_name]
         pyperclip.copy(password)
         return 'Password copied to clipboard'
@@ -89,6 +89,17 @@ def encrypt_function(encrypt_file, mode, data=None):
             file.write(data)
 
 
+# Makes sure my usb is plugged in with the file on it
+def usb_assertion():
+    try:
+        encryption_key = json_function('E:key.json', 'rb')
+
+        return encryption_key
+    except FileNotFoundError:
+        print('Unicorns don\'t exist')
+        sys.exit()
+
+
 # Prints out how this pos works
 def usage():
     print('A very shitty password manager')
@@ -98,15 +109,28 @@ def usage():
     print('Consider yourself warned...')
 
 
-# Makes sure my usb is plugged in with the file on it
-try:
-    key = json_function('E:key.json', 'rb')
+def majestic_unicorn():
+    print('''
+                  ^
+                  ^^
+                  ^^^
+                  ^^^^
+                  ^^^^^ $
+                UNIPASSUN$$
+            UNIPASSUNIPAS$$$
+        UNIPASSUN(  )IPASS$$$$
+    UNIPASSUNIPASSUNIPASS$$$$$
+    UNIPASSUNIPASSUNIPASS$$$$$$
+            UNIPASSUNIPAS$$$$$
+            UNIPASSUNIPAS$$$$$$
+           UNIPASSUNIPASS$$$$$$$$
+          UNIPASSUNIPASSU$$$$$$
+''')
 
-except FileNotFoundError:
-    print('Unicorns don\'t exist')
-    sys.exit()
 
+key = usb_assertion()
 encrypted_file = 'password_manager.encrypted'
+majestic_unicorn()
 
 # Loads my data and decrypts it, or makes a new dictionary
 try:
