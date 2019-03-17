@@ -20,7 +20,6 @@ import pyperclip
 import sys
 import getpass
 import hashlib
-import send2trash   # Using send2trash to not permantly delete my file yet
 
 from cryptography.fernet import Fernet
 
@@ -37,7 +36,7 @@ def generator(n):
     strong_password = ''.join(password)
     return strong_password
 
-# Retrieves passwords from the json file
+# Retrieves passwords from the dictionary
 def get_password(account_name, dictionary):
     if account_name in account_dict:
         master_password()
@@ -47,7 +46,7 @@ def get_password(account_name, dictionary):
     else:
         return 'No password exists for that account'
 
-# Stores passwords into the file
+# Stores passwords into the dictionary
 def store_password(account_name, password, dictionary):
     dictionary[account_name] = password
     print('Password succesfully stored')
@@ -130,12 +129,16 @@ try:
         account_name = sys.argv[2]
 
         print(get_password(account_name, account_dict))
-
-    # Encrypts my data when I am done
-    data = json.dumps(account_dict)
-    fernet = Fernet(key)
-    encrypted = fernet.encrypt(bytes(data, 'utf-8'))
-    encrypt_function(encrypted_file, 'wb', encrypted)
     
 except IndexError:
-    usage()           
+    usage()
+
+# Encrypts my data when I am done
+data = json.dumps(account_dict)
+
+key = Fernet.generate_key()
+fernet = Fernet(key)
+encrypted = fernet.encrypt(bytes(data, 'utf-8'))
+    
+encrypt_function(encrypted_file, 'wb', encrypted)
+json_function('E:key.json', 'w', key.decode())
