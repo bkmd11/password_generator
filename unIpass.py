@@ -101,19 +101,16 @@ except FileNotFoundError:
     sys.exit()
     
 encrypted_file = 'password_manager.encrypted'
-decrypted_file = 'password_manager.json'
 
+# Loads my data and decrypts it, or makes a new dictionary
 try:
     data = encrypt_function(encrypted_file, 'rb', None)
 
     fernet = Fernet(key)
     decrypted = fernet.decrypt(data)
 
-    encrypt_function(decrypted_file, 'wb', decrypted)
+    account_dict = json.loads(decrypted)
 
-    account_dict = json_function(decrypted_file, 'r', None)
-    
-# If the json file doesnt exist
 except:
     account_dict = {}
 
@@ -127,14 +124,6 @@ try:
 
         password = generator(int(pass_length))
         store_password(account, password, account_dict)
-
-        json_function(decrypted_file, 'w', account_dict)
-        data = encrypt_function(decrypted_file, 'rb', None)
-
-        fernet = Fernet(key)
-        encrypted = fernet.encrypt(data)
-
-        encrypt_function(encrypted_file, 'wb', encrypted)
     
     # Takes system arguments to call up passwords
     elif sys.argv[1] == '-F':
@@ -142,7 +131,11 @@ try:
 
         print(get_password(account_name, account_dict))
 
-    send2trash.send2trash(decrypted_file)
-            
+    # Encrypts my data when I am done
+    data = json.dumps(account_dict)
+    fernet = Fernet(key)
+    encrypted = fernet.encrypt(bytes(data, 'utf-8'))
+    encrypt_function(encrypted_file, 'wb', encrypted)
+    
 except IndexError:
     usage()           
