@@ -6,11 +6,13 @@ It is probably extremely insecure and should be used by no one, ever.
 This currently has a lot to be cleaned up to be more pretty, but
 overall I am much excitement.
 
-Ideas for Improvement:
-USB for ferent key and password hash (assert line for ensuring drive is in)
+My usb idea to store the hash and key somewhere other than my program makes
+this slightly more secure, but is probably still a weakness in my manager.
+I am not sure how else I can go about solving that security problem at
+this time.
 
+Ideas for Improvement:
 Import optparse for my command line arguments
-Make a logo that prints on starting
 """
 
 import random
@@ -58,11 +60,11 @@ def store_password(account_name, password, dictionary):
 # Checks a master password for security
 def master_password():
     master = getpass.getpass('Enter your password:\n')
-    # Turns user input int0 bytes for hashing
+    # Turns user input into bytes for hashing
     master_pass = master.encode()
     h = hashlib.sha256(master_pass).hexdigest()
-
-    if h != '4e388ab32b10dc8dbc7e28144f552830adc74787c1e2c0824032078a79f227fb':
+    master_hash = json_function('E:hash.json','r')
+    if h != master_hash:
         print('INVALID PASSWORD!!!')
         sys.exit()
 
@@ -109,6 +111,7 @@ def usage():
     print('Consider yourself warned...')
 
 
+# Obviously this is just a majestic unicorn
 def majestic_unicorn():
     print('''
                   ^
