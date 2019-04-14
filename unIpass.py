@@ -1,5 +1,4 @@
 #! python3
-
 """ This program can generate, store, and find passwords for various accounts.
 It is probably extremely insecure and should be used by no one, ever.
 
@@ -12,8 +11,7 @@ I am not sure how else I can go about solving that security problem at
 this time.
 
 Ideas for Improvement:
-Import optparse for my command line arguments
-Also salting my hash
+salting my hash
 """
 
 import random
@@ -23,6 +21,7 @@ import pyperclip
 import sys
 import getpass
 import hashlib
+import argparse
 
 from cryptography.fernet import Fernet
 
@@ -45,7 +44,7 @@ def generator(n):
 def get_password(account_name, dictionary):
     master_password()
     if account_name in dictionary:
-        password = account_dict[account_name]
+        password = dictionary[account_name]
         pyperclip.copy(password)
         return 'Password copied to clipboard'
     else:
@@ -103,15 +102,6 @@ def usb_assertion():
         sys.exit()
 
 
-# Prints out how this pos works
-def usage():
-    print('A very shitty password manager')
-    print('-M <number> <account name>    Makes a randomly generated password for that account')
-    print('-F <account name>    Finds the password for that account, and copies it to the clipboard')
-    print('NEVER actually store your passwords in here because you will be hacked')
-    print('Consider yourself warned...')
-
-
 # Obviously this is just a majestic unicorn
 def majestic_unicorn():
     print('''
@@ -132,48 +122,68 @@ def majestic_unicorn():
 ''')
 
 
-key = usb_assertion()
-encrypted_file = 'password_manager.encrypted'
-majestic_unicorn()
+# This opens the program to set everything up
+def open_unipass():
+    key = usb_assertion()
+    majestic_unicorn()
 
-# Loads my data and decrypts it, or makes a new dictionary
-try:
-    data = encrypt_function(encrypted_file, 'rb')
+    # Loads my data and decrypts it, or makes a new dictionary
+    try:
+        data = encrypt_function('password_manager.encrypted', 'rb')
 
+        fernet = Fernet(key)
+        decrypted = fernet.decrypt(data)
+
+        account_dict = json.loads(decrypted)
+        return account_dict
+
+    except FileNotFoundError:
+        account_dict = {}
+        return account_dict
+
+
+# Sets everything up to close the program
+def close_unipass(account_dict):
+    # Encrypts my data when I am done
+    data = json.dumps(account_dict)
+
+    key = Fernet.generate_key()
     fernet = Fernet(key)
-    decrypted = fernet.decrypt(data)
+    encrypted = fernet.encrypt(bytes(data, 'utf-8'))
 
-    account_dict = json.loads(decrypted)
+    encrypt_function('password_manager.encrypted', 'wb', encrypted)
+    json_function('E:key.json', 'w', key.decode())
 
-except FileNotFoundError:
-    account_dict = {}
 
-### I can use optparse to do this better maybe ###
-### optparse will probably make it catch errors better ###
-try:
-    # Takes system arguments for making the password
-    if sys.argv[1] == '-M':
-        pass_length = sys.argv[2]
-        account = sys.argv[3]
+def main():
+    # Makes my argument parser
+    parser = argparse.ArgumentParser(description='''A very shitty password manager...
+                Please don't actually think your passwords are safe with this thing!''')
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-m', '--make', action='store_true',
+                       help='Specify the length of the password you want for the account')
+    group.add_argument('-f', '--find', action='store_true',
+                       help='Finds the password for a specified account')
+    parser.add_argument('account', help='Enter the account')
+    parser.add_argument('-l', '--length', type=int, metavar='', default=19,
+                        help='specify the length of the password')
 
-        password = generator(int(pass_length))
+    args = parser.parse_args()
+
+    account_dict = open_unipass()
+
+    if args.make:
+        pass_length = args.length
+        account = args.account
+        password = generator(pass_length)
         store_password(account, password, account_dict)
 
-    # Takes system arguments to call up passwords
-    elif sys.argv[1] == '-F':
-        account_name = sys.argv[2]
-
+    elif args.find:
+        account_name = args.account
         print(get_password(account_name, account_dict))
 
-except IndexError:
-    usage()
+    close_unipass(account_dict)
 
-# Encrypts my data when I am done
-data = json.dumps(account_dict)
 
-key = Fernet.generate_key()
-fernet = Fernet(key)
-encrypted = fernet.encrypt(bytes(data, 'utf-8'))
-
-encrypt_function(encrypted_file, 'wb', encrypted)
-json_function('E:key.json', 'w', key.decode())
+if __name__ == '__main__':
+    main()
