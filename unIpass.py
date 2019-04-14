@@ -13,6 +13,7 @@ this time.
 
 Ideas for Improvement:
 Import optparse for my command line arguments
+Also salting my hash
 """
 
 import random
@@ -144,10 +145,11 @@ try:
 
     account_dict = json.loads(decrypted)
 
-except:
+except FileNotFoundError:
     account_dict = {}
 
 ### I can use optparse to do this better maybe ###
+### optparse will probably make it catch errors better ###
 try:
     # Takes system arguments for making the password
     if sys.argv[1] == '-M':
