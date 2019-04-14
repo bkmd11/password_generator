@@ -165,7 +165,7 @@ def main():
     group.add_argument('-f', '--find', action='store_true',
                        help='Finds the password for a specified account')
     parser.add_argument('account', help='Enter the account')
-    parser.add_argument('-l', '--length', type=int, metavar='', default=19,
+    parser.add_argument('-l', '--length', type=int, metavar='int', default=19,
                         help='Specify the length of the password')
 
     args = parser.parse_args()
