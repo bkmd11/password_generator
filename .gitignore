@@ -3,3 +3,4 @@
 *.json
 *.encrypted
 .idea
+__pycache__
