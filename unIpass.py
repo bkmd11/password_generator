@@ -161,12 +161,12 @@ def main():
                 Please don't actually think your passwords are safe with this thing!''')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-m', '--make', action='store_true',
-                       help='Specify the length of the password you want for the account')
+                       help='Makes a password for the specified account')
     group.add_argument('-f', '--find', action='store_true',
                        help='Finds the password for a specified account')
     parser.add_argument('account', help='Enter the account')
     parser.add_argument('-l', '--length', type=int, metavar='', default=19,
-                        help='specify the length of the password')
+                        help='Specify the length of the password')
 
     args = parser.parse_args()
 
@@ -181,6 +181,9 @@ def main():
     elif args.find:
         account_name = args.account
         print(get_password(account_name, account_dict))
+
+    else:
+        print('You must specify [-m] or [-f]')
 
     close_unipass(account_dict)
 
