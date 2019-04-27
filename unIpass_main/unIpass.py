@@ -14,30 +14,15 @@ Ideas for Improvement:
 salting my hash
 """
 import argparse
+import time
+import pyperclip
 
 import password_options
 import start_up
+import shut_down
 import file_writing
 
-
-# Obviously this is just a majestic unicorn
-def majestic_unicorn():
-    print('''
-                  ^
-                  ^^
-                  ^^^
-                  ^^^^
-                  ^^^^^ $
-                UNIPASSUN$$
-            UNIPASSUNIPAS$$$
-        UNIPASSUN(  )IPASS$$$$
-    UNIPASSUNIPASSUNIPASS$$$$$
-    UNIPASSUNIPASSUNIPASS$$$$$$
-            UNIPASSUNIPAS$$$$$
-            UNIPASSUNIPAS$$$$$$
-           UNIPASSUNIPASS$$$$$$$$
-          UNIPASSUNIPASSU$$$$$$
-''')
+from majestic_unicorn import majestic_unicorn
 
 
 def main():
@@ -66,11 +51,13 @@ def main():
     elif args.find:
         account_name = args.account
         print(password_options.get_password(account_name, account_dict))
+        time.sleep(10)
+        pyperclip.copy('PASSWORD CLEARED')
 
     else:
         print('You must specify [-m] or [-f]')
 
-    start_up.close_unipass(account_dict)
+    shut_down.close_unipass(account_dict)
 
 
 if __name__ == '__main__':

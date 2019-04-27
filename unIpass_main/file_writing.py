@@ -29,3 +29,4 @@ def encrypt_function(encrypt_file, mode, data=None):
 def store_password(account_name, password, dictionary):
     dictionary[account_name] = password
     print('Password successfully stored')
+
