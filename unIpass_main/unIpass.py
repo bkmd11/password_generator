@@ -12,17 +12,18 @@ this time.
 
 Ideas for Improvement:
 salting my hash
+Adding something to keep track of how old passwords are, and suggest changing 
 """
 import argparse
 import time
 import pyperclip
 
-import password_options
-import start_up
-import shut_down
-import file_writing
+from unIpass_main import password_options
+from unIpass_main import start_up
+from unIpass_main import shut_down
+from unIpass_main import file_writing
 
-from majestic_unicorn import majestic_unicorn
+from unIpass_main.majestic_unicorn import majestic_unicorn
 
 
 def main():

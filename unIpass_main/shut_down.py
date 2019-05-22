@@ -4,8 +4,6 @@ import file_writing
 from cryptography.fernet import Fernet
 
 
-
-
 # Sets everything up to close the program
 def close_unipass(account_dict):
     # Encrypts my data when I am done
