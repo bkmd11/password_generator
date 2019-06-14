@@ -7,7 +7,7 @@ import getpass
 import hashlib
 import sys
 
-from file_writing import json_function
+from unIpass_main.file_writing import json_function
 
 
 # Checks a master password for security
@@ -45,3 +45,10 @@ def get_password(account_name, dictionary):
         return 'Password copied to clipboard'
     else:
         return 'No password exists for that account'
+
+
+# Shows all accounts on file
+def accounts_stored(dictionary):
+    accounts = dictionary.keys()
+
+    return accounts

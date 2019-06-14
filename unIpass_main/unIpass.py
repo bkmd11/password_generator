@@ -12,11 +12,13 @@ this time.
 
 Ideas for Improvement:
 salting my hash
-Adding something to keep track of how old passwords are, and suggest changing 
+Adding something to keep track of how old passwords are, and suggest changing
+Add subparser to argparse?
 """
 import argparse
 import time
 import pyperclip
+import pprint
 
 from unIpass_main import password_options
 from unIpass_main import start_up
@@ -35,11 +37,17 @@ def main():
                        help='Makes a password for the specified account')
     group.add_argument('-f', '--find', action='store_true',
                        help='Finds the password for a specified account')
+    group.add_argument('-t', '--tracked', action='store_true',
+                       help='Shows all the accounts kept on file')
     parser.add_argument('account', help='The account you want to use')
     parser.add_argument('-l', '--length', type=int, metavar='int', default=19,
                         help='Specify the length of the password')
 
     args = parser.parse_args()
+    """ I want to play around with this portion in interactive mode,
+        so that I can see what things look like with -m and -f and -l
+        get called
+        """
     account_dict = start_up.open_unipass()
     majestic_unicorn()
 
@@ -54,6 +62,10 @@ def main():
         print(password_options.get_password(account_name, account_dict))
         time.sleep(10)
         pyperclip.copy('PASSWORD CLEARED')
+
+    elif args.tracked:
+        tracked_accounts = password_options.accounts_stored(account_dict)
+        pprint.pprint(tracked_accounts)
 
     else:
         print('You must specify [-m] or [-f]')
