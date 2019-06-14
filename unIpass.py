@@ -30,6 +30,8 @@ from unIpass_main.majestic_unicorn import majestic_unicorn
 
 def main():
     # Makes my argument parser
+    """ I think making a subparser will help with my issue of my account being mandatory,
+    even though I do not want it for my new function that shows all tracked accounts"""
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
                 Please don't actually think your passwords are safe with this thing!''')
     group = parser.add_mutually_exclusive_group()

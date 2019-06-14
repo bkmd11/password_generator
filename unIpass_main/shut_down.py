@@ -1,5 +1,5 @@
 import json
-import file_writing
+from unIpass_main import file_writing
 
 from cryptography.fernet import Fernet
 

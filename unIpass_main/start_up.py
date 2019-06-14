@@ -5,7 +5,7 @@ import sys
 
 from cryptography.fernet import Fernet
 
-import file_writing
+from unIpass_main import file_writing
 
 
 # Makes sure my usb is plugged in with the file on it
