@@ -67,7 +67,8 @@ def main():
 
     elif args.tracked:
         tracked_accounts = password_options.accounts_stored(account_dict)
-        pprint.pprint(tracked_accounts)
+        for k in tracked_accounts:
+            print(k)
 
     else:
         print('You must specify [-m] or [-f]')
