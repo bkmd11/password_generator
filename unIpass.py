@@ -12,13 +12,14 @@ this time.
 
 Ideas for Improvement:
 salting my hash
-Adding something to keep track of how old passwords are, and suggest changing
-Add subparser to argparse?
+Something to delete/rename accounts
+
+I am not crazy with how argparse does things...
+My old way was better in my opinion
 """
 import argparse
 import time
 import pyperclip
-import pprint
 
 from unIpass_main import password_options
 from unIpass_main import start_up
@@ -30,8 +31,6 @@ from unIpass_main.majestic_unicorn import majestic_unicorn
 
 def main():
     # Makes my argument parser
-    """ I think making a subparser will help with my issue of my account being mandatory,
-    even though I do not want it for my new function that shows all tracked accounts"""
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
                 Please don't actually think your passwords are safe with this thing!''')
     group = parser.add_mutually_exclusive_group()
@@ -39,13 +38,14 @@ def main():
                        help='Makes a password for the specified account')
     group.add_argument('-f', '--find', action='store_true',
                        help='Finds the password for a specified account')
-    group.add_argument('-t', '--tracked', action='store_true',
+    group.add_argument('-s', '--stored', action='store_true',
                        help='Shows all the accounts kept on file')
-    parser.add_argument('account', help='The account you want to use')
+    parser.add_argument('-a', '--account', help='The account you want to use')
     parser.add_argument('-l', '--length', type=int, metavar='int', default=19,
                         help='Specify the length of the password')
 
     args = parser.parse_args()
+
     """ I want to play around with this portion in interactive mode,
         so that I can see what things look like with -m and -f and -l
         get called
@@ -65,13 +65,10 @@ def main():
         time.sleep(10)
         pyperclip.copy('PASSWORD CLEARED')
 
-    elif args.tracked:
+    elif args.stored:
         tracked_accounts = password_options.accounts_stored(account_dict)
         for k in tracked_accounts:
             print(k)
-
-    else:
-        print('You must specify [-m] or [-f]')
 
     shut_down.close_unipass(account_dict)
 
