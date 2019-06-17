@@ -20,13 +20,30 @@ My old way was better in my opinion
 import argparse
 import time
 import pyperclip
+import getpass
+import hashlib
+import sys
+
 
 from unIpass_main import password_options
 from unIpass_main import start_up
 from unIpass_main import shut_down
 from unIpass_main import file_writing
+from unIpass_main import unIpass_settings
 
 from unIpass_main.majestic_unicorn import majestic_unicorn
+
+
+# Checks a master password for security
+def master_password():
+    master = getpass.getpass('Enter your password:\n')
+    # Turns user input into bytes for hashing
+    master_pass = master.encode()
+    h = hashlib.sha256(master_pass).hexdigest()
+    master_hash = file_writing.json_function('E:hash.json', 'r')
+    if h != master_hash:
+        print('INVALID PASSWORD!!!')
+        sys.exit()
 
 
 def main():
@@ -35,40 +52,39 @@ def main():
                 Please don't actually think your passwords are safe with this thing!''')
     subparser = parser.add_subparsers(dest='command', )
 
-    make = subparser.add_parser('make', help='Makes a password for the specified account')
-    make.add_argument('account', help='The account you want a password for')
-    make.add_argument('length', type=int, help='the length of the password, >13 recommended')
+    # Parses for making/finding passwords
+    password = subparser.add_parser('password', help='Main use: [find] or [make] a password')
+    group = password.add_mutually_exclusive_group()
+    group.add_argument('-m', '--make', action='store_true', help='Makes a password of a given length')
+    group.add_argument('-f', '--find', action='store_true', help='Finds the password for the specified account')
+    password.add_argument('account', help='The account')
+    password.add_argument('-l', '--length', type=int, default=19, help='Length of the password')
 
-    find = subparser.add_parser('find', help='Finds the password for a specified account')
-    find.add_argument('account', help='Shows all the accounts kept on file')
-
-    stored = subparser.add_parser('stored', help='Allows viewing and maintenance of the accounts stored')
-    stored.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
+    # System maintenance like changing/deleting accounts, and showing all stored accounts
+    settings = subparser.add_parser('settings', help='Allows viewing and maintenance of the accounts stored')
+    settings.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
 
     args = parser.parse_args()
-
-    """ I want to play around with this portion in interactive mode,
-        so that I can see what things look like with -m and -f and -l
-        get called
-        """
     account_dict = start_up.open_unipass()
     majestic_unicorn()
+    master_password()
 
-    if args.command == 'make':
-        pass_length = args.length
-        account = args.account
-        password = password_options.generator(pass_length)
-        file_writing.store_password(account, password, account_dict)
+    if args.command == 'password':
+        if args.make:
+            pass_length = args.length
+            account = args.account
+            password = password_options.generator(pass_length)
+            file_writing.store_password(account, password, account_dict)
 
-    elif args.command == 'find':
-        account_name = args.account
-        print(password_options.get_password(account_name, account_dict))
-        time.sleep(10)
-        pyperclip.copy('PASSWORD CLEARED')
+        elif args.find:
+            account_name = args.account
+            print(password_options.get_password(account_name, account_dict))
+            time.sleep(10)
+            pyperclip.copy('PASSWORD CLEARED')
 
-    elif args.command == 'stored':
+    elif args.command == 'settings':
         if args.all:
-            tracked_accounts = password_options.accounts_stored(account_dict)
+            tracked_accounts = unIpass_settings.accounts_stored(account_dict)
             for k in tracked_accounts:
                 print(k)
 
