@@ -33,16 +33,17 @@ def main():
     # Makes my argument parser
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
                 Please don't actually think your passwords are safe with this thing!''')
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument('-m', '--make', action='store_true',
-                       help='Makes a password for the specified account')
-    group.add_argument('-f', '--find', action='store_true',
-                       help='Finds the password for a specified account')
-    group.add_argument('-s', '--stored', action='store_true',
-                       help='Shows all the accounts kept on file')
-    parser.add_argument('-a', '--account', help='The account you want to use')
-    parser.add_argument('-l', '--length', type=int, metavar='int', default=19,
-                        help='Specify the length of the password')
+    subparser = parser.add_subparsers(dest='command', )
+
+    make = subparser.add_parser('make', help='Makes a password for the specified account')
+    make.add_argument('account', help='The account you want a password for')
+    make.add_argument('length', type=int, help='the length of the password, >13 recommended')
+
+    find = subparser.add_parser('find', help='Finds the password for a specified account')
+    find.add_argument('account', help='Shows all the accounts kept on file')
+
+    stored = subparser.add_parser('stored', help='Allows viewing and maintenance of the accounts stored')
+    stored.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
 
     args = parser.parse_args()
 
@@ -53,22 +54,23 @@ def main():
     account_dict = start_up.open_unipass()
     majestic_unicorn()
 
-    if args.make:
+    if args.command == 'make':
         pass_length = args.length
         account = args.account
         password = password_options.generator(pass_length)
         file_writing.store_password(account, password, account_dict)
 
-    elif args.find:
+    elif args.command == 'find':
         account_name = args.account
         print(password_options.get_password(account_name, account_dict))
         time.sleep(10)
         pyperclip.copy('PASSWORD CLEARED')
 
-    elif args.stored:
-        tracked_accounts = password_options.accounts_stored(account_dict)
-        for k in tracked_accounts:
-            print(k)
+    elif args.command == 'stored':
+        if args.all:
+            tracked_accounts = password_options.accounts_stored(account_dict)
+            for k in tracked_accounts:
+                print(k)
 
     shut_down.close_unipass(account_dict)
 
