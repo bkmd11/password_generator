@@ -12,10 +12,9 @@ this time.
 
 Ideas for Improvement:
 salting my hash
-Something to delete/rename accounts
-
-I am not crazy with how argparse does things...
-My old way was better in my opinion
+Maybe adding a feature that tracks how old a password is and recommends a change...
+        Though this is technically not best practice as unless a password is compromised it never needs
+        to be changes
 """
 import argparse
 import time
@@ -52,7 +51,7 @@ def main():
     subparser = parser.add_subparsers(dest='command', )
 
     # Parses for making/finding passwords
-    password = subparser.add_parser('password', help='Main use: [find] or [make] a password')
+    password = subparser.add_parser('pw', help='Main use: [find] or [make] a password')
     group = password.add_mutually_exclusive_group()
     group.add_argument('-m', '--make', action='store_true', help='Makes a password of a given length')
     group.add_argument('-f', '--find', action='store_true', help='Finds the password for the specified account')
@@ -72,7 +71,7 @@ def main():
     majestic_unicorn()
     master_password()
 
-    if args.command == 'password':
+    if args.command == 'pw':
         if args.make:
             pass_length = args.length
             account = args.account
