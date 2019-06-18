@@ -26,8 +26,7 @@ import sys
 
 
 from unIpass_main import password_options
-from unIpass_main import start_up
-from unIpass_main import shut_down
+from unIpass_main import system
 from unIpass_main import file_writing
 from unIpass_main import unIpass_settings
 
@@ -62,10 +61,14 @@ def main():
 
     # System maintenance like changing/deleting accounts, and showing all stored accounts
     settings = subparser.add_parser('settings', help='Allows viewing and maintenance of the accounts stored')
-    settings.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
+    group2 = settings.add_mutually_exclusive_group()
+    group2.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
+    group2.add_argument('-e', '--edit', action='store_true', help='Changes the name of an account')
+    group2.add_argument('-d', '--delete', action='store_true', help='Deletes old accounts')
+    settings.add_argument('--account', help='The account to be edited')
 
     args = parser.parse_args()
-    account_dict = start_up.open_unipass()
+    account_dict = system.open_unipass()
     majestic_unicorn()
     master_password()
 
@@ -87,8 +90,13 @@ def main():
             tracked_accounts = unIpass_settings.accounts_stored(account_dict)
             for k in tracked_accounts:
                 print(k)
+        elif args.edit:
+            key = unIpass_settings.edit_name()
+            account_dict[key] = account_dict.pop(args.account)
+        elif args.delete:
+            account_dict = unIpass_settings.delete(account_dict, args.account)
 
-    shut_down.close_unipass(account_dict)
+    system.close_unipass(account_dict)
 
 
 if __name__ == '__main__':
