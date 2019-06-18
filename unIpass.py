@@ -23,7 +23,6 @@ import getpass
 import hashlib
 import sys
 
-
 from unIpass_main import password_options
 from unIpass_main import system
 from unIpass_main import file_writing
@@ -47,7 +46,8 @@ def master_password():
 def main():
     # Makes my argument parser
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
-                Please don't actually think your passwords are safe with this thing!''')
+                Please don't actually think your passwords are safe with this thing!''',
+                                     epilog='If you value your internet accounts, do not use this')
     subparser = parser.add_subparsers(dest='command', )
 
     # Parses for making/finding passwords
@@ -56,7 +56,7 @@ def main():
     group.add_argument('-m', '--make', action='store_true', help='Makes a password of a given length')
     group.add_argument('-f', '--find', action='store_true', help='Finds the password for the specified account')
     password.add_argument('account', help='The account')
-    password.add_argument('-l', '--length', type=int, default=19, help='Length of the password')
+    password.add_argument('-l', '--length', metavar='int', type=int, default=19, help='Length of the password')
 
     # System maintenance like changing/deleting accounts, and showing all stored accounts
     settings = subparser.add_parser('settings', help='Allows viewing and maintenance of the accounts stored')
@@ -64,7 +64,7 @@ def main():
     group2.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
     group2.add_argument('-e', '--edit', action='store_true', help='Changes the name of an account')
     group2.add_argument('-d', '--delete', action='store_true', help='Deletes old accounts')
-    settings.add_argument('--account', help='The account to be edited')
+    settings.add_argument('--account', metavar='', help='The account to be edited')
 
     args = parser.parse_args()
     account_dict = system.open_unipass()
