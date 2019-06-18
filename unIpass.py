@@ -55,18 +55,22 @@ def main():
     group = password.add_mutually_exclusive_group()
     group.add_argument('-m', '--make', action='store_true', help='Makes a password of a given length')
     group.add_argument('-f', '--find', action='store_true', help='Finds the password for the specified account')
-    password.add_argument('account', help='The account')
-    password.add_argument('-l', '--length', metavar='int', type=int, default=19, help='Length of the password')
+    password.add_argument('account', help='The name of the account')
+    password.add_argument('-l', '--length', metavar='', type=int, default=19, help='Specify length of the password')
 
     # System maintenance like changing/deleting accounts, and showing all stored accounts
     settings = subparser.add_parser('settings', help='Allows viewing and maintenance of the accounts stored')
     group2 = settings.add_mutually_exclusive_group()
-    group2.add_argument('-a', '--all', action='store_true', help='Shows all accounts tracked')
-    group2.add_argument('-e', '--edit', action='store_true', help='Changes the name of an account')
+    group2.add_argument('-s', '--show', action='store_true', help='Shows all accounts tracked')
+    group2.add_argument('-e', '--edit', action='store_true', help='Edits the name of an account')
     group2.add_argument('-d', '--delete', action='store_true', help='Deletes old accounts')
     settings.add_argument('--account', metavar='', help='The account to be edited')
 
     args = parser.parse_args()
+    if args.command is None:
+        parser.parse_args(['-h'])
+        sys.exit()
+
     account_dict = system.open_unipass()
     majestic_unicorn()
     master_password()
