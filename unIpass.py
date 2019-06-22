@@ -89,7 +89,7 @@ def main():
             pyperclip.copy('PASSWORD CLEARED')
 
     elif args.command == 'settings':
-        if args.all:
+        if args.show:
             tracked_accounts = unIpass_settings.accounts_stored(account_dict)
             for k in tracked_accounts:
                 print(k)
