@@ -61,11 +61,15 @@ def main():
 
     # System maintenance like changing/deleting accounts, and showing all stored accounts
     settings = subparser.add_parser('settings', help='Allows viewing and maintenance of the accounts stored')
-    group2 = settings.add_mutually_exclusive_group()
-    group2.add_argument('-s', '--show', action='store_true', help='Shows all accounts tracked')
-    group2.add_argument('-e', '--edit', action='store_true', help='Edits the name of an account')
-    group2.add_argument('-d', '--delete', action='store_true', help='Deletes old accounts')
     settings.add_argument('--account', metavar='', help='The account to be edited')
+    settings.add_argument('--change', metavar='', help='Change the name of the account')
+    group2 = settings.add_mutually_exclusive_group()
+    group2.add_argument('-s', '--show', action='store_true',
+                        help='Shows all accounts tracked\nex: unIpass.py settings -s')
+    group2.add_argument('-e', '--edit', action='store_true',
+                        help='Edits the name of an account\nex: unIpass.py settings -e --account xxx --change yyy')
+    group2.add_argument('-d', '--delete', action='store_true',
+                        help='Deletes old accounts\nex: unIpass.py settings -d --account xxx')
 
     args = parser.parse_args()
     if args.command is None:
@@ -77,14 +81,14 @@ def main():
     master_password()
 
     # todo: Maybe break this up to have the subparser run a different program ex:
-            """ if pw:
-                    password(args)
+    """ if pw:
+            password(args)
                     
-                if settings:
-                    settings(args)
+        if settings:
+            settings(args)
             
-            this would pass the Namespace obj into a function and that would 
-            ideally pass the variables into everything below that"""
+    this would pass the Namespace obj into a function and that would 
+    ideally pass the variables into everything below that"""
 
     if args.command == 'pw':
         if args.make:
@@ -107,13 +111,18 @@ def main():
                 print('No password exists for that account')
 
     elif args.command == 'settings':
+
         if args.show:
             tracked_accounts = unIpass_settings.accounts_stored(account_dict)
             for k in tracked_accounts:
                 print(k)
+
         elif args.edit:
-            key = unIpass_settings.edit_name()
-            account_dict[key] = account_dict.pop(args.account)
+            try:
+                account_dict = unIpass_settings.edit_name(args.account, args.change, account_dict)
+            except KeyError:
+                print('Error: account not found')
+
         elif args.delete:
             account_dict = unIpass_settings.delete(account_dict, args.account)
 
