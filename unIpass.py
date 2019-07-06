@@ -82,12 +82,19 @@ def main():
             account = args.account
             password = password_options.generator(pass_length)
             file_writing.store_password(account, password, account_dict)
+            print('Password successfully stored')
 
         elif args.find:
             account_name = args.account
-            print(password_options.get_password(account_name, account_dict))
-            time.sleep(10)
-            pyperclip.copy('PASSWORD CLEARED')
+            password = password_options.get_password(account_name, account_dict)
+            if password is not None:
+                pyperclip.copy(password)
+                print('Password copied to clipboard')
+                time.sleep(10)
+                pyperclip.copy('')
+                print('PASSWORD CLEARED')
+            else:
+                print('No password exists for that account')
 
     elif args.command == 'settings':
         if args.show:

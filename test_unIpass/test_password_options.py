@@ -14,7 +14,6 @@ class TestGenerator(unittest.TestCase):
 
 
 # Testing get_password()
-# Todo: will need to change these once I make get_password() better
 class TestGetPassword(unittest.TestCase):
 
     # Sets up my dictionary
@@ -25,19 +24,19 @@ class TestGetPassword(unittest.TestCase):
     def test_get_password_gets_password(self):
         result = password_options.get_password('bank', self.dictionary)
 
-        self.assertEqual(result, 'Password copied to clipboard')
+        self.assertEqual(result, 'ABC')
 
     # Tests that it ignores case of account_name
     def test_case_sensitivity(self):
         result = password_options.get_password('BANK', self.dictionary)
 
-        self.assertEqual(result, 'Password copied to clipboard')
+        self.assertEqual(result, 'ABC')
 
     # Tests that it will return message if password isn't in dictionary
     def test_get_password_wont_get_password(self):
         result = password_options.get_password('spam', self.dictionary)
 
-        self.assertEqual(result, 'No password exists for that account')
+        self.assertIsNone(result)
 
 
 

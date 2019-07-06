@@ -29,5 +29,3 @@ def encrypt_function(encrypt_file, mode, data=None):
 # Stores passwords into the dictionary
 def store_password(account_name, password, dictionary):
     dictionary[account_name.lower()] = password    # Makes the account_name lower case for ease of use
-    print('Password successfully stored')
-
