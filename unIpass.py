@@ -76,6 +76,16 @@ def main():
     majestic_unicorn()
     master_password()
 
+    # todo: Maybe break this up to have the subparser run a different program ex:
+            """ if pw:
+                    password(args)
+                    
+                if settings:
+                    settings(args)
+            
+            this would pass the Namespace obj into a function and that would 
+            ideally pass the variables into everything below that"""
+
     if args.command == 'pw':
         if args.make:
             pass_length = args.length
