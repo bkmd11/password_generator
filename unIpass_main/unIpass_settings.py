@@ -6,6 +6,7 @@ def accounts_stored(dictionary):
 
 
 # Edits the name of an account in case of a typo
+# Todo: This can be changed to be testable
 def edit_name():
     new_key = input('Enter the new name for the account:\n')
     old_key = new_key

@@ -15,6 +15,7 @@ salting my hash
 Maybe adding a feature that tracks how old a password is and recommends a change...
         Though this is technically not best practice as unless a password is compromised it never needs
         to be changes
+todo: make everything more testable
 """
 import argparse
 import time
