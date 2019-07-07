@@ -15,7 +15,6 @@ salting my hash
 Maybe adding a feature that tracks how old a password is and recommends a change...
         Though this is technically not best practice as unless a password is compromised it never needs
         to be changes
-todo: make everything more testable
 """
 import argparse
 import time
@@ -72,6 +71,7 @@ def main():
                         help='Deletes old accounts\nex: unIpass.py settings -d --account xxx')
 
     args = parser.parse_args()
+
     if args.command is None:
         parser.parse_args(['-h'])
         sys.exit()
@@ -80,51 +80,13 @@ def main():
     majestic_unicorn()
     master_password()
 
-    # todo: Maybe break this up to have the subparser run a different program ex:
-    """ if pw:
-            password(args)
-                    
-        if settings:
-            settings(args)
-            
-    this would pass the Namespace obj into a function and that would 
-    ideally pass the variables into everything below that"""
+    # todo: see how I actually feel about this given the errors I saw happen once
 
     if args.command == 'pw':
-        if args.make:
-            pass_length = args.length
-            account = args.account
-            password = password_options.generator(pass_length)
-            file_writing.store_password(account, password, account_dict)
-            print('Password successfully stored')
-
-        elif args.find:
-            account_name = args.account
-            password = password_options.get_password(account_name, account_dict)
-            if password is not None:
-                pyperclip.copy(password)
-                print('Password copied to clipboard')
-                time.sleep(10)
-                pyperclip.copy('')
-                print('PASSWORD CLEARED')
-            else:
-                print('No password exists for that account')
+        password_options.main(args, account_dict)
 
     elif args.command == 'settings':
-
-        if args.show:
-            tracked_accounts = unIpass_settings.accounts_stored(account_dict)
-            for k in tracked_accounts:
-                print(k)
-
-        elif args.edit:
-            try:
-                account_dict = unIpass_settings.edit_name(args.account, args.change, account_dict)
-            except KeyError:
-                print('Error: account not found')
-
-        elif args.delete:
-            account_dict = unIpass_settings.delete(account_dict, args.account)
+        account_dict = unIpass_settings.main(args, account_dict)
 
     system.close_unipass(account_dict)
 
