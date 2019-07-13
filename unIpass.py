@@ -17,11 +17,11 @@ Maybe adding a feature that tracks how old a password is and recommends a change
         to be changes
 """
 import argparse
-import time
-import pyperclip
 import getpass
 import hashlib
 import sys
+import pyperclip
+import time
 
 from unIpass_main import password_options
 from unIpass_main import system
@@ -80,13 +80,41 @@ def main():
     majestic_unicorn()
     master_password()
 
-    # todo: see how I actually feel about this given the errors I saw happen once
-
     if args.command == 'pw':
-        password_options.main(args, account_dict)
+        if args.make:
+            pass_length = args.length
+            account = args.account
+            password = password_options.generator(pass_length)
+            file_writing.store_password(account, password, account_dict)
+            print('Password successfully stored')
+
+        elif args.find:
+            account_name = args.account
+            password = password_options.get_password(account_name, account_dict)
+            if password is not None:
+                pyperclip.copy(password)
+                print('Password copied to clipboard')
+                time.sleep(10)
+                pyperclip.copy('')
+                print('PASSWORD CLEARED')
+            else:
+                print('No password exists for that account')
 
     elif args.command == 'settings':
-        account_dict = unIpass_settings.main(args, account_dict)
+        if args.show:
+            tracked_accounts = unIpass_settings.accounts_stored(account_dict)
+            for k in tracked_accounts:
+                print(k)
+
+        elif args.edit:
+            try:
+                account_dict = unIpass_settings.edit_name(args.account, args.change, account_dict)
+
+            except KeyError:
+                print('Error: account not found')
+
+        elif args.delete:
+            account_dict = unIpass_settings.delete(account_dict, args.account)
 
     system.close_unipass(account_dict)
 

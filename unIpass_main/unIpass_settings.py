@@ -17,23 +17,3 @@ def delete(dictionary, key):
     dictionary.pop(key)
 
     return dictionary
-
-
-def main(name_space_object, dictionary):
-    if name_space_object.show:
-        tracked_accounts = accounts_stored(dictionary)
-        for k in tracked_accounts:
-            print(k)
-
-    elif name_space_object.edit:
-
-        try:
-            dictionary = edit_name(name_space_object.account, name_space_object.change, dictionary)
-
-        except KeyError:
-            print('Error: account not found')
-
-    elif name_space_object.delete:
-        dictionary = delete(dictionary, name_space_object.account)
-
-    return dictionary
