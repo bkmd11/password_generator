@@ -44,6 +44,7 @@ def master_password():
 
 
 def main():
+    # Todo: work on my help feature, leaves more to be desired currently
     # Makes my argument parser
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
                 Please don't actually think your passwords are safe with this thing!''',
@@ -64,11 +65,11 @@ def main():
     settings.add_argument('--change', metavar='', help='Change the name of the account')
     group2 = settings.add_mutually_exclusive_group()
     group2.add_argument('-s', '--show', action='store_true',
-                        help='Shows all accounts tracked\nex: unIpass.py settings -s')
+                        help='Shows all accounts tracked')
     group2.add_argument('-e', '--edit', action='store_true',
-                        help='Edits the name of an account\nex: unIpass.py settings -e --account xxx --change yyy')
+                        help='Edits the name of an account')
     group2.add_argument('-d', '--delete', action='store_true',
-                        help='Deletes old accounts\nex: unIpass.py settings -d --account xxx')
+                        help='Deletes old accounts')
 
     args = parser.parse_args()
 
