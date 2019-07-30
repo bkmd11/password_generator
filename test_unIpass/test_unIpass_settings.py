@@ -15,12 +15,17 @@ class TestAccountsStored(unittest.TestCase):
 
 class TestDelete(unittest.TestCase):
     """Tests the delete function"""
-    # TODO: add tests to handle a key that isnt in dictionary
+
     def tests_delete_works(self):
         """Tests that it deletes from dictionary"""
         result = unIpass_settings.delete({'bank': 'abc'}, 'bank')
 
         self.assertEqual(len(result), 0)
+
+    def test_delete_error_handling(self):
+        """Tests that delete function can handle a key error correctly"""
+        with self.assertRaises(KeyError):
+            result = unIpass_settings.delete({'bank': 'abc'}, 'invalid_key')
 
 
 class TestEdit(unittest.TestCase):

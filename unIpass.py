@@ -50,7 +50,7 @@ def main():
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
                 Please don't actually think your passwords are safe with this thing!''',
                                      epilog='If you value your internet accounts, do not use this')
-    subparser = parser.add_subparsers(dest='command', )
+    subparser = parser.add_subparsers(dest='command',)
 
     # Parses for making/finding passwords
     password = subparser.add_parser('pw', help='Main use: [find] or [make] a password')
@@ -113,10 +113,14 @@ def main():
                 account_dict = unIpass_settings.edit_name(args.account, args.change, account_dict)
 
             except KeyError:
-                print('Error: account not found')
+                print('Error: account does not exist')
 
         elif args.delete:
-            account_dict = unIpass_settings.delete(account_dict, args.account)
+            try:
+                account_dict = unIpass_settings.delete(account_dict, args.account)
+
+            except KeyError:
+                print('Error: account does not exist')
 
     system.close_unipass(account_dict)
 

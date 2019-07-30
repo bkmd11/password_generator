@@ -3,7 +3,6 @@
 import json
 
 
-# TODO: I may not actually need this function
 def json_function(json_file, read_or_write, data=None):
     """Loads/Dumps json file"""
     if data is None:
