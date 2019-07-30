@@ -4,23 +4,29 @@ import json
 from unIpass_main import file_writing
 
 
-# The test case for store_password
 class TestStorePassword(unittest.TestCase):
+    """Test case for store_password"""
 
-    def setUp(self):
-        self.dictionary = {}
-
-    # Tests ignore case feature
     def test_store_password_lower_case(self):
-        file_writing.store_password('Bank', 'abc', self.dictionary)
+        """ Tests ignore case feature"""
+        dictionary = {}
+        file_writing.store_password('Bank', 'abc', dictionary)
 
-        self.assertEqual(self.dictionary, {'bank': 'abc'})
+        self.assertEqual(dictionary, {'bank': 'abc'})
 
-    # Tests that it will create a new entry
     def test_store_password_works(self):
-        file_writing.store_password('insta', 'def', self.dictionary)
+        """Tests that it will create a new entry"""
+        dictionary = {}
+        file_writing.store_password('insta', 'def', dictionary)
 
-        self.assertIsNotNone(self.dictionary['insta'])
+        self.assertIsNotNone(dictionary['insta'])
+
+    def test_store_password_changes_stored_account(self):
+        """Tests that it will update an account if it's already stored"""
+        dictionary = {'spam': 'abc'}
+        file_writing.store_password('spam', 'def', dictionary)
+
+        self.assertEqual(dictionary, {'spam': 'def'})
 
 
 class TestJsonFunction(unittest.TestCase):
