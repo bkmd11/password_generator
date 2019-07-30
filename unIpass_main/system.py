@@ -8,8 +8,8 @@ from cryptography.fernet import Fernet
 from unIpass_main import file_writing
 
 
-# Makes sure my usb is plugged in with the file on it
 def usb_assertion():
+    """Makes sure the usb is plugged in with the file on it"""
     try:
         encryption_key = file_writing.json_function('E:key.json', 'rb')
 
@@ -19,8 +19,8 @@ def usb_assertion():
         sys.exit()
 
 
-# This opens the program to set everything up
 def open_unipass():
+    """Opens the program and sets variables up"""
     key = usb_assertion()
 
     # Loads my data and decrypts it, or makes a new dictionary
@@ -38,8 +38,8 @@ def open_unipass():
         return account_dict
 
 
-# Sets everything up to close the program
 def close_unipass(account_dict):
+    """Saves the state of the program for shut down"""
     # Encrypts my data when I am done
     data = json.dumps(account_dict)
 

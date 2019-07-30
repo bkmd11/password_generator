@@ -4,8 +4,8 @@ import random
 import string
 
 
-# Generates the passwords
 def generator(n):
+    """Generates the passwords"""
     all_letters = list(string.ascii_letters + string.digits)
     password = []
 
@@ -17,8 +17,8 @@ def generator(n):
     return strong_password
 
 
-# Retrieves passwords from the dictionary
 def get_password(account_name, dictionary):
+    """Retrieves passwords from the dictionary"""
     account_name = account_name.lower()    # Makes it ignore case for ease of use
     if account_name in dictionary:
         password = dictionary[account_name]

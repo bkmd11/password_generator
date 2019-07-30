@@ -1,8 +1,8 @@
 from colorama import init, Fore, Style
 
 
-# Obviously this is just a majestic unicorn
 def majestic_unicorn():
+    """Obviously this is just a majestic unicorn"""
     init()
     print(Fore.LIGHTRED_EX + '''
                   ^

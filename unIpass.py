@@ -33,6 +33,7 @@ from unIpass_main.majestic_unicorn import majestic_unicorn
 
 # Checks a master password for security
 def master_password():
+    """Checks a master password"""
     master = getpass.getpass('Enter your password:\n')
     # Turns user input into bytes for hashing
     master_pass = master.encode()
