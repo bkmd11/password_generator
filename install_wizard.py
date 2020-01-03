@@ -2,23 +2,25 @@
 It will set up a master password, an encrypted file for the passwords, and the
 json files for the hash and encryption key
 """
+# todo: I need to make this actually not suck. Many bugs, no error handling and just generally doesnt work
 
 import hashlib
 import getpass
+import os
 
 from unIpass_main import file_writing
 
 
-# Sets up the master password the first time the program is run
 def make_master_password(master_password):
+    """Sets up the master password the first time the program is run"""
     password = master_password.encode()
     hashed_password = hashlib.sha256(password).hexdigest()
 
     return hashed_password
 
 
-# Stores the hash on a thumb drive
 def store_hash(hashed_password):
+    """Stores the hash on a thumb drive"""
     try:
         file_writing.json_function('E:hash.json', 'w', hashed_password)
 
@@ -26,27 +28,30 @@ def store_hash(hashed_password):
         print('Unicorn must be plugged in')
 
 
-# Makes the necessary files to run unIpass
-# TODO: There must be a better way to write files into a given directory. look into os/sys modules.
-#  I believe either the asyc or gui real python get into that vaguely...
-#  It would make all my file writing more pythonic
-#  This also wont currently actually make this directory
 def make_files_for_unipass():
-    file_writing.encrypt_function('C:Users\\Brian Kendall\\unIpass\\password_manager.encrypted', 'wb', data='')
+    """Makes the necessary files to run unIpass"""
+    path = 'C:\\Users\\Brian Kendall\\unIpass'  # todo make this walk directory tree to not just do my username
+    os.mkdir(path)
+    os.chdir(path)
+    file_writing.encrypt_function('password_manager.encrypted', 'wb', data=b'')
     file_writing.json_function('E:key.json', 'w', data='')
-
+    # todo: move unIpass.py and associated files into new directory
 
 def main():
-    while True:
-        password = getpass.getpass('Please enter a strong password for your master password:\n')
-        password_2 = getpass.getpass('Please confirm your password:\n')
-        if password == password_2:
-            hashed_master_password = make_master_password(password)
-            store_hash(hashed_master_password)
-            make_files_for_unipass()
 
-        else:
-            print('The passwords you entered did not match.')
+    password_2 = 'spam'
+    while True:
+        # todo: this works in cmd prompt but not pycharm
+        password = getpass.getpass('Please enter a strong password for your master password:\n')
+       # password_2 = getpass.getpass('Please confirm your password:\n')
+        if password == password_2:
+            break
+
+        print('The passwords you entered did not match.')
+
+    hashed_master_password = make_master_password(password)
+    store_hash(hashed_master_password)
+    make_files_for_unipass()
 
 
 if __name__ == '__main__':

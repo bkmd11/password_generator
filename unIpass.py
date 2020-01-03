@@ -45,7 +45,6 @@ def master_password():
 
 
 def main():
-    # Todo: work on my help feature, leaves more to be desired currently
     # Makes my argument parser
     parser = argparse.ArgumentParser(description='''A very shitty password manager...
                 Please don't actually think your passwords are safe with this thing!''',
@@ -54,6 +53,7 @@ def main():
 
     # Parses for making/finding passwords
     password = subparser.add_parser('pw', help='Main use: [find] or [make] a password')
+
     group = password.add_mutually_exclusive_group()
     group.add_argument('-m', '--make', action='store_true', help='Makes a password of a given length')
     group.add_argument('-f', '--find', action='store_true', help='Finds the password for the specified account')
